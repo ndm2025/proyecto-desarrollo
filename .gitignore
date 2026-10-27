@@ -1,0 +1,22 @@
+# Dependencias
+vendor/
+node_modules/
+
+# Configuración local / secretos
+.env
+.env.local
+config/database.php
+
+# Logs y cache
+*.log
+storage/logs/
+bootstrap/cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
