@@ -1,0 +1,1 @@
+(() => {const e=document.getElementById('venta-registrada');if(!e)return;try{const key='clinica.venta.borrador.'+e.dataset.usuario,d=JSON.parse(sessionStorage.getItem(key)||'null');if(d&&d.operacion===e.dataset.operacion)sessionStorage.removeItem(key);}catch(error){}})();

@@ -1,0 +1,36 @@
+# Claves SSH
+*.pem
+*.ppk
+*.key
+
+# Base de datos (datos sensibles)
+*.sql
+*.db
+*.sqlite
+
+# Archivos de configuracion con credenciales
+config/database.php
+
+# Archivos temporales y de sistema
+*.tmp
+*.log
+~$*
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Documentos de Word temporales
+~$*.docx
+
+# Archivos de capturas
+*.docx
+'@
+
+# Now initialize git
+cd "C:\Users\norma\OneDrive\Desktop\10 SEMESTRE\DESARROLLO WEB\PROYECTO"
+git init
+git add .
+git status --short | Select-Object -First 20

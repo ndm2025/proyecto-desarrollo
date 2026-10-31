@@ -1,0 +1,5 @@
+<?php
+require_once '../includes/farmacia.php';exigirPermiso('proveedores.ver');$db=farmaciaDb();$stmt=$db->prepare('SELECT * FROM Proveedores WHERE ProveedorID=?');$stmt->execute([(int)($_GET['id']??0)]);$p=$stmt->fetch(PDO::FETCH_ASSOC);if(!$p){http_response_code(404);exit('Proveedor no encontrado.');}$titulo='Detalle del proveedor';require '../includes/header.php';
+?>
+<h1 class="page-title"><i class="bi bi-truck"></i> <?=h($p['Nombre'])?></h1><div class="card"><div class="card-header">Datos del proveedor</div><div class="card-body"><?php foreach(['NIT'=>'NIT','Telefono'=>'Teléfono','Email'=>'Correo','Direccion'=>'Dirección'] as $campo=>$label): ?><p><strong><?=$label?>:</strong> <?=h($p[$campo])?></p><?php endforeach; ?><p><strong>Estado:</strong> <?=$p['Activo']?'Activo':'Inactivo'?></p></div></div><a class="btn btn-secondary" href="index.php">Volver</a> <?php if(tienePermiso('proveedores.editar')): ?><a class="btn btn-primary" href="editar.php?id=<?=$p['ProveedorID']?>">Editar</a><?php endif; ?>
+<?php require '../includes/footer.php'; ?>

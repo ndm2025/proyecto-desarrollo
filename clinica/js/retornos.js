@@ -1,0 +1,6 @@
+(() => {
+    const f=document.getElementById('form-retorno');if(!f)return;const q=v=>'Q '+(v/100).toLocaleString('es-GT',{minimumFractionDigits:2,maximumFractionDigits:2});
+    for(const e of f.querySelectorAll('.retorno-cantidad')){const mensaje=document.createElement('small');mensaje.className='text-danger d-block mt-1';mensaje.setAttribute('role','status');e.after(mensaje);e.errorRetorno=mensaje;}
+    function calcular(){let total=0,n=0,valido=true;for(const e of f.querySelectorAll('.retorno-cantidad')){const tr=e.closest('tr'),d=tr.dataset,cant=Number(e.value),bien=Number.isInteger(cant)&&cant>=0&&cant<=Number(e.max)&&e.value!=='';e.errorRetorno.textContent=bien?'':'Usa una cantidad entera entre 0 y '+e.max+'.';e.setAttribute('aria-invalid',String(!bien));if(!bien)valido=false;const importe=bien?Number(BigInt(d.total)*BigInt(Number(d.devueltas)+cant)/BigInt(d.cantidad)-BigInt(d.reintegrado)):0;tr.querySelector('.retorno-importe').textContent=bien?q(importe):'—';total+=importe;if(bien)n+=cant;}document.getElementById('retorno-total').textContent=valido?q(total):'Revisa las cantidades';document.getElementById('confirmar-retorno').disabled=!valido||n<1;}
+    f.addEventListener('input',calcular);f.addEventListener('submit',()=>{document.getElementById('confirmar-retorno').disabled=true;});calcular();
+})();

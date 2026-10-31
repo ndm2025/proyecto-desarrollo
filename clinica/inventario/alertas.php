@@ -1,0 +1,23 @@
+<?php
+require_once '../includes/farmacia.php';exigirPermiso('inventario.ver');require_once '../includes/inventario_servicio.php';
+$db=farmaciaDb();$errores=[];$bajos=$proximos=$vencidos=null;$dias=30;
+try{
+    $dias=entero($_GET['dias']??30,1,365);iniciarConsultaInventario($db);
+    $fb=filtrosInventario(['estado'=>'1','situacion'=>'bajo']);[$sql,$params]=consultaInventario($fb);$bajos=paginarInventario($db,$sql,$params,1,'Disponibles,NombreMedicamento',10);
+    $fp=filtrosInventario(['vence'=>'proximos','dias'=>$dias,'con_unidades'=>1],true);[$sql,$params]=consultaLotes($fp);$proximos=paginarInventario($db,$sql,$params,1,'FechaVencimiento,LoteID',10);
+    $fv=filtrosInventario(['vence'=>'vencidos','dias'=>$dias,'con_unidades'=>1],true);[$sql,$params]=consultaLotes($fv);$vencidos=paginarInventario($db,$sql,$params,1,'FechaVencimiento,LoteID',10);$db->commit();
+}catch(Throwable $error){if($db->inTransaction())$db->rollBack();http_response_code($error instanceof InvalidArgumentException?422:500);$errores[]=$error instanceof InvalidArgumentException?$error->getMessage():'No se pudieron consultar las alertas.';if(!$error instanceof InvalidArgumentException)error_log((string)$error);}
+$titulo='Alertas de inventario';$seccionInventario='alertas';require '../includes/header.php';
+?>
+<div class="inventario-panel"><h1 class="page-title"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Alertas de inventario</h1>
+<?php require '../includes/inventario_nav.php';erroresVista($errores); ?>
+<?php if(!$errores): ?>
+<form method="get" class="row g-2 mb-3"><div class="col-8 col-md-4"><label class="form-label" for="dias">Próximos vencimientos en días</label><input type="number" class="form-control" id="dias" name="dias" min="1" max="365" value="<?=$dias?>"></div><div class="col-4 col-md-3 d-flex align-items-end"><button class="btn btn-primary">Actualizar</button></div></form>
+<div class="row g-2 mb-3"><?php foreach([[$bajos['total'],'Productos en mínimo o sin stock'],[$proximos['total'],'Lotes próximos a vencer'],[$vencidos['total'],'Lotes vencidos con unidades']] as [$numero,$label]): ?><div class="col-12 col-md-4"><div class="card h-100 mb-0"><div class="card-body"><div class="indicador-numero"><?=$numero?></div><div class="indicador-label"><?=$label?></div></div></div></div><?php endforeach; ?></div>
+<div class="card"><div class="card-header"><span>Reposición de productos activos</span><a class="btn btn-light btn-sm" href="index.php?estado=1&situacion=bajo">Ver todos</a></div><div class="card-body table-responsive"><table class="table tabla-inventario"><thead><tr><th>Producto</th><th>Disponible</th><th>Mínimo</th><th>Acción</th></tr></thead><tbody><?php foreach($bajos['filas'] as $m): ?><tr><td><?=h($m['Codigo'].' · '.$m['NombreMedicamento'])?></td><td><?=h($m['Disponibles'].' '.$m['UnidadBase'])?></td><td><?=h($m['StockMinimo'])?></td><td><a class="btn btn-info btn-sm" href="lotes.php?producto=<?=$m['MedicamentoID']?>">Lotes</a></td></tr><?php endforeach; ?><?php if(!$bajos['filas']): ?><tr><td colspan="4" class="text-muted">No hay productos por debajo del umbral configurado.</td></tr><?php endif; ?></tbody></table></div></div>
+<?php foreach([['Próximos vencimientos',$proximos,'proximos'],['Vencidos con existencias físicas',$vencidos,'vencidos']] as [$label,$datos,$vence]): ?>
+<div class="card"><div class="card-header"><span><?=h($label)?></span><a class="btn btn-light btn-sm" href="lotes.php?<?=h(http_build_query(['vence'=>$vence,'dias'=>$dias,'con_unidades'=>1]))?>">Ver todos</a></div><div class="card-body table-responsive"><table class="table tabla-inventario"><thead><tr><th>Producto</th><th>Lote</th><th>Vencimiento</th><th>Unidades físicas</th><th>Estado</th><th>Acción</th></tr></thead><tbody><?php foreach($datos['filas'] as $l): ?><tr><td><?=h($l['NombreMedicamento'])?></td><td><?=h($l['NumeroLote'])?></td><td><?=h($l['FechaVencimiento'])?><?php if((int)$l['DiasVencimiento']===0): ?><br><span class="badge bg-warning text-dark">Vence hoy</span><?php endif; ?></td><td><?=h($l['CantidadActual'])?></td><td><?=$l['Activo']?'Activo':'Inactivo'?></td><td><a class="btn btn-info btn-sm" href="/clinica/lotes/ver.php?id=<?=$l['LoteID']?>">Ver lote</a></td></tr><?php endforeach; ?><?php if(!$datos['filas']): ?><tr><td colspan="6" class="text-muted">No hay lotes con esas condiciones.</td></tr><?php endif; ?></tbody></table></div></div>
+<?php endforeach; ?>
+<p class="text-muted small">Se muestran hasta 10 registros por sección. Los avisos de vencimiento incluyen lotes inactivos que todavía tienen unidades físicas.</p>
+<?php endif; ?></div>
+<?php require '../includes/footer.php'; ?>

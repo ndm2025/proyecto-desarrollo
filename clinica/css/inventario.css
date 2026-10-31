@@ -1,0 +1,15 @@
+.inventario-panel .indicador-numero{font-size:1.65rem;font-weight:600;color:var(--dark-blue);line-height:1.2;overflow-wrap:anywhere}
+.inventario-panel .indicador-label{font-size:.84rem;color:#59636b}
+.inventario-panel .tabla-inventario{font-size:.9rem}
+.inventario-panel .tabla-inventario th{white-space:nowrap}
+.inventario-panel .acciones-inventario{display:flex;flex-wrap:wrap;gap:5px}
+.inventario-panel .acciones-inventario .btn{min-height:34px}
+.inventario-panel .texto-motivo{min-width:160px;max-width:330px;overflow-wrap:anywhere;white-space:normal}
+.inventario-panel .card-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+@media(max-width:767.98px){
+body:has(.inventario-panel) .content-wrapper{padding:16px 12px}
+.inventario-panel .page-title{font-size:1.5rem}
+.inventario-panel .table-responsive{border-radius:6px}
+.inventario-panel .indicador-numero{font-size:1.45rem}
+.inventario-nav .btn{min-height:36px}
+}
