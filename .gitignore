@@ -22,15 +22,22 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Documentos de Word temporales
-~$*.docx
-
-# Archivos de capturas
+# Documentos y archivos personales
 *.docx
-'@
+*.pptx
+*.pdf
 
-# Now initialize git
-cd "C:\Users\norma\OneDrive\Desktop\10 SEMESTRE\DESARROLLO WEB\PROYECTO"
-git init
-git add .
-git status --short | Select-Object -First 20
+# Dependencias
+vendor/
+node_modules/
+
+# Configuracion local / secretos
+.env
+.env.local
+
+# Logs y cache
+storage/logs/
+bootstrap/cache/
+
+# IDE
+*.swp
