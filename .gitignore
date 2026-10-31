@@ -1,43 +1,11 @@
-# Claves SSH
+﻿# Claves SSH
 *.pem
 *.ppk
 *.key
 
-# Base de datos (datos sensibles)
-*.sql
-*.db
-*.sqlite
-
-# Archivos de configuracion con credenciales
-config/database.php
-
-# Archivos temporales y de sistema
-*.tmp
-*.log
+# Archivos temporales de Office
 ~$*
-Thumbs.db
+
+# Archivos de sistema
 .DS_Store
-
-# IDE
-.vscode/
-.idea/
-
-# Documentos y archivos personales
-*.docx
-*.pptx
-*.pdf
-
-# Dependencias
-vendor/
-node_modules/
-
-# Configuracion local / secretos
-.env
-.env.local
-
-# Logs y cache
-storage/logs/
-bootstrap/cache/
-
-# IDE
-*.swp
+Thumbs.db
